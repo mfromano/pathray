@@ -5,8 +5,7 @@ var ctx=canvas.getContext("2d");
 AEMODEL_PATH = 'https://mlmed.github.io/tools/xray/models/xrv-all-45rot15trans15scale/';
 
 async function loadModel(path) {
-    var model = await tf.loadGraphModel(path + 'model.json');
-    return model
+    return await tf.loadGraphModel(path + 'model.json')
 }
 
 var config = $.getJSON(AEMODEL_PATH + 'config.json', function(json) {
@@ -14,32 +13,6 @@ var config = $.getJSON(AEMODEL_PATH + 'config.json', function(json) {
     });
 
 const model = loadModel(AEMODEL_PATH)
-
-//from chester-xray
-async function prepare_image_resize_crop(imgElement, size){
-
-    orig_width = imgElement.width
-    orig_height = imgElement.height
-    if (orig_width < orig_height){
-        imgElement.width = size
-        imgElement.height = Math.floor(size*orig_height/orig_width)
-    }else{
-        imgElement.height = size
-        imgElement.width = Math.floor(size*orig_width/orig_height)
-    }
-
-    console.log("img wxh: " + orig_width + ", " + orig_height + " => " + imgElement.width + ", " + imgElement.height)
-
-    img = tf.browser.fromPixels(imgElement).toFloat();
-
-    hOffset = Math.floor(img.shape[1]/2 - size/2)
-    wOffset = Math.floor(img.shape[0]/2 - size/2)
-
-    img_cropped = img.slice([wOffset,hOffset],[size,size])
-    img_cropped = img_cropped.mean(2).div(255)
-
-    return img_cropped
-}
 
 async function resizeImage(img) {
     var imgCropped = await config.then(data => prepare_image_resize_crop(img, data.IMAGE_SIZE));
