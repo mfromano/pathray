@@ -5,7 +5,8 @@
  */
 
 var app = require('../app');
-var debug = require('debug')('pathraw:server');
+var modelApp = require('../app')
+var debug = require('debug')('pathray:server');
 var http = require('http');
 
 /**
@@ -14,7 +15,6 @@ var http = require('http');
 
 var port = normalizePort(process.env.PORT || '3000');
 app.set('port', port);
-
 /**
  * Create HTTP server.
  */
@@ -27,7 +27,7 @@ var server = http.createServer(app);
 
 server.listen(port);
 server.on('error', onError);
-server.on('listening', onListening);
+server.on('listening', createListener(server));
 
 /**
  * Normalize a port into a number, string, or false.
@@ -59,8 +59,8 @@ function onError(error) {
   }
 
   var bind = typeof port === 'string'
-      ? 'Pipe ' + port
-      : 'Port ' + port;
+    ? 'Pipe ' + port
+    : 'Port ' + port;
 
   // handle specific listen errors with friendly messages
   switch (error.code) {
@@ -81,10 +81,12 @@ function onError(error) {
  * Event listener for HTTP server "listening" event.
  */
 
-function onListening() {
-  var addr = server.address();
-  var bind = typeof addr === 'string'
-      ? 'pipe ' + addr
-      : 'port ' + addr.port;
-  debug('Listening on ' + bind);
+function createListener(serv_er) {
+  return function onListening() {
+    var addr = serv_er.address();
+    var bind = typeof addr === 'string'
+        ? 'pipe ' + addr
+        : 'port ' + addr.port;
+    debug('Listening on ' + bind);
+  }
 }
