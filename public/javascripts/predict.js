@@ -32,7 +32,7 @@ function expandArray(arr) {
         newArr[newArrInd] = arr[i];
         newArr[newArrInd+1] = arr[i];
         newArr[newArrInd+2] = arr[i];
-        newArr[newArrInd+3] = arr[1];
+        newArr[newArrInd+3] = 255;
         newArrInd += 4;
     }
     return newArr;
