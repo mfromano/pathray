@@ -16,8 +16,7 @@ const model = loadModel(AEMODEL_PATH)
 
 async function resizeImage(img) {
     var imgCropped = await config.then(data => prepare_image_resize_crop(img, data.IMAGE_SIZE));
-    var imgScaled = config.then(data => imgCropped.mul(2).sub(1).mul(tf.scalar(data.IMAGE_SCALE)));
-    return imgScaled;
+    return config.then(data => imgCropped.mul(2).sub(1).mul(tf.scalar(data.IMAGE_SCALE)));
 }
 
 async function featureScale(arr) {
@@ -52,10 +51,29 @@ async function makeImageNode(im_age) {
     return img2;
 }
 
-console.log(config)
-var img = new Image()
-img.src = '../images/xray.jpeg'
-var img2 = resizeImage(img);
+async function predict(model, croppedImage) {
+    return await model.then(res => res.predict(croppedImage.reshape([1,1,croppedImage.shape[0], croppedImage.shape[1]])));
+}
+
+async function appendTableDom(results) {
+    var labels = await config.then(res => res.LABELS);
+    var tbl = document.createElement('table');
+    await tbl.createTHead().insertRow().appendChild(document.createElement('th')
+        .appendChild(document.createTextNode('Results')));
+    var tblBody = await tbl.createTBody()
+    for (var i=0; i < labels.length; i++) {
+        var row = tblBody.insertRow();
+        await row.insertCell().appendChild(document.createTextNode(labels[i]));
+        await results.then(res => row.insertCell().appendChild(document.createTextNode(res[i]*100)));
+    }
+    body.appendChild(tbl);
+}
+
+let img = new Image()
+img.src = '../images/atelectasis.jpeg'
+let img2 = resizeImage(img);
 //
-var imgNode = makeImageNode(img2);
+let imgNode = makeImageNode(img2);
 imgNode.then(res =>  document.body.appendChild(res));
+let pred = img2.then(res => predict(model, res));
+pred.then(res => appendTableDom(res.data()))

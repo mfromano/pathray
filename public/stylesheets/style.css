@@ -6,3 +6,8 @@ body {
 a {
   color: #00B7FF;
 }
+
+thead {
+  font: 16px "Lucida Grande", Helvetica, Arial, sans-serif;
+  color: crimson;
+}

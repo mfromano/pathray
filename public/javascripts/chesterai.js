@@ -1,8 +1,7 @@
 //This code is released under a Attribution-NonCommercial 4.0 Generic (CC BY-NC 4.0) license;
 // https://creativecommons.org/licenses/by-nc/4.0/
 // prepare_image_resize_crop used, unchanged, courtesy of https://github.com/mlmed/chester-xray/blob/master/
-
-export function prepare_image_resize_crop(imgElement, size){
+function prepare_image_resize_crop(imgElement, size){
 
     orig_width = imgElement.width
     orig_height = imgElement.height
