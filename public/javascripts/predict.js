@@ -1,18 +1,15 @@
 var body = document.getElementById('main');
 var canvas=document.createElement("canvas");
+canvas.setAttribute('id','xray')
+body.appendChild(canvas);
 var ctx=canvas.getContext("2d");
 
-AEMODEL_PATH = 'https://mlmed.github.io/tools/xray/models/xrv-all-45rot15trans15scale/';
+MODEL_PATH = 'http://mlmed.github.io/tools/xray/models/xrv-all-45rot15trans15scale/';
+
 
 async function loadModel(path) {
-    return await tf.loadGraphModel(path + 'model.json')
+    return tf.loadGraphModel(path + 'model.json');
 }
-
-var config = $.getJSON(AEMODEL_PATH + 'config.json', function(json) {
-        return json;
-    });
-
-const model = loadModel(AEMODEL_PATH)
 
 async function resizeImage(img) {
     var imgCropped = await config.then(data => prepare_image_resize_crop(img, data.IMAGE_SIZE));
@@ -44,20 +41,19 @@ async function makeImageNode(im_age) {
     var rescaled = await im_age.then(res => featureScale(res.dataSync()));
     var arr = new Uint8ClampedArray(rescaled);
     arr = expandArray(arr);
-    var imdat = new ImageData(arr, canvas.width, canvas.height);
-    ctx.putImageData(imdat, 10, 10);
-    var img2 = new Image();
-    img2.src = canvas.toDataURL();
-    return img2;
+    const imdat = new ImageData(arr, canvas.width, canvas.height);
+    ctx.putImageData(imdat, 0, 0);
 }
 
 async function predict(model, croppedImage) {
-    return await model.then(res => res.predict(croppedImage.reshape([1,1,croppedImage.shape[0], croppedImage.shape[1]])));
+    croppedImage = croppedImage.reshape([1,1,croppedImage.shape[0], croppedImage.shape[1]])
+    return await model.then(res => res.predict(croppedImage));
 }
 
 async function appendTableDom(results) {
     var labels = await config.then(res => res.LABELS);
     var tbl = document.createElement('table');
+    tbl.setAttribute('id', 'resultsTable')
     await tbl.createTHead().insertRow().appendChild(document.createElement('th')
         .appendChild(document.createTextNode('Results')));
     var tblBody = await tbl.createTBody()
@@ -69,11 +65,22 @@ async function appendTableDom(results) {
     body.appendChild(tbl);
 }
 
-let img = new Image()
-img.src = '../images/atelectasis.jpeg'
-let img2 = resizeImage(img);
-//
-let imgNode = makeImageNode(img2);
-imgNode.then(res =>  document.body.appendChild(res));
-let pred = img2.then(res => predict(model, res));
-pred.then(res => appendTableDom(res.data()))
+async function applyClassActivationMap(mod, cla_ss=2, img) {
+    return gradClassActivationMap(mod, cla_ss, img);
+}
+
+var config = $.getJSON(MODEL_PATH + 'config.json', function(json) {
+    return json;
+});
+
+
+const model = loadModel(MODEL_PATH);
+
+let img = new Image();
+img.src = '../images/atelectasis.jpeg';
+var imgResized = resizeImage(img);
+makeImageNode(imgResized);
+let pred = imgResized.then(res => predict(model, res));
+imgResized = imgResized.then(res => res.reshape([1,1,res.shape[0], res.shape[1]]))
+pred.then(res => appendTableDom(res.data()));
+var grads = model.then(mdl => imgResized.then(img => computeGrads_real(mdl, img, 2)))

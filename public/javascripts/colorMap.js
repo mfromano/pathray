@@ -21,9 +21,9 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
- */
 
-import * as tensorflow from '@tensorflow/tfjs';
+Note: this has been converted from typescript -> javascript
+ */
 
 // 64 x 3 RGB colormap.
 // This is used to convert a 1-channel (grayscale) image into a color
@@ -223,32 +223,3 @@ const RGB_COLORMAP = [
   0.9839,
   0.0805
 ];
-
-export function applyColorMap(
-  grayScaleImage: tensorflow.Tensor<tensorflow.Rank>
-) {
-  return tensorflow.tidy(() => {
-    const EPSILON = 1e-5;
-    const xRange = grayScaleImage.max().sub(grayScaleImage.min());
-    const xNorm = grayScaleImage
-      .sub(grayScaleImage.min())
-      .div(xRange.add(EPSILON));
-    const xNormData = xNorm.dataSync();
-
-    const height: number = grayScaleImage.shape[1] as number;
-    const width: number = grayScaleImage.shape[2] as number;
-    const buffer = tensorflow.buffer([1, height, width, 3]);
-
-    const colorMapSize = RGB_COLORMAP.length / 3;
-    for (let i = 0; i < height; ++i) {
-      for (let j = 0; j < width; ++j) {
-        const pixelValue = xNormData[i * width + j];
-        const row = Math.floor(pixelValue * colorMapSize);
-        buffer.set(RGB_COLORMAP[3 * row], 0, i, j, 0);
-        buffer.set(RGB_COLORMAP[3 * row + 1], 0, i, j, 1);
-        buffer.set(RGB_COLORMAP[3 * row + 2], 0, i, j, 2);
-      }
-    }
-    return buffer.toTensor();
-  });
-}

@@ -11,3 +11,20 @@ thead {
   font: 16px "Lucida Grande", Helvetica, Arial, sans-serif;
   color: crimson;
 }
+
+#xray {
+  position: absolute;
+  left: 20px;
+  top: 20px;
+}
+
+#xray2 {
+  position: absolute;
+  left: 20px;
+  top: 20px;
+}
+#resultsTable {
+  position: absolute;
+  left: 20px;
+  top: 250px;
+}
