@@ -69,6 +69,14 @@ async function applyClassActivationMap(mod, cla_ss=2, img) {
     return gradClassActivationMap(mod, cla_ss, img);
 }
 
+async function predictAndPlot(mod, im_age) {
+    let pred = await im_age.then(res => predict(mod, res));
+    im_age = await im_age.then(res => res.reshape([1,1,res.shape[0], res.shape[1]]))
+    await appendTableDom(pred.data());
+    var maxClass = await pred.dataSync().indexOf(Math.max(...pred.dataSync()));
+    return mod.then(mdl => computeGrads_real(mdl, im_age, maxClass));
+}
+
 var config = $.getJSON(MODEL_PATH + 'config.json', function(json) {
     return json;
 });
@@ -80,7 +88,4 @@ let img = new Image();
 img.src = '../images/atelectasis.jpeg';
 var imgResized = resizeImage(img);
 makeImageNode(imgResized);
-let pred = imgResized.then(res => predict(model, res));
-imgResized = imgResized.then(res => res.reshape([1,1,res.shape[0], res.shape[1]]))
-pred.then(res => appendTableDom(res.data()));
-var grads = model.then(mdl => imgResized.then(img => computeGrads_real(mdl, img, 2)))
+predictAndPlot(model, imgResized);
