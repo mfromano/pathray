@@ -1,5 +1,5 @@
 body {
-  padding: 20px;
+  padding: 50px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
 
@@ -9,23 +9,23 @@ a {
 
 thead {
   font: 16px "Lucida Grande", Helvetica, Arial, sans-serif;
-  color: crimson;
+  color: #dc143c;
 }
 
 #xray {
-  position: relative;
+  position: absolute;
   left: 20px;
   top: 20px;
 }
 
 #xray2 {
-  position: relative;
-  left: 20px;
+  position: absolute;
+  left: 300px;
   top: 20px;
 }
 
 #resultsTable {
   position: absolute;
   left: 20px;
-  top: 300px;
+  top: 250px;
 }
