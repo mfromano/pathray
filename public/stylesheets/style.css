@@ -1,5 +1,5 @@
 body {
-  padding: 50px;
+  padding: 20px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
 
@@ -13,18 +13,19 @@ thead {
 }
 
 #xray {
-  position: absolute;
+  position: relative;
   left: 20px;
   top: 20px;
 }
 
 #xray2 {
-  position: absolute;
+  position: relative;
   left: 20px;
   top: 20px;
 }
+
 #resultsTable {
   position: absolute;
   left: 20px;
-  top: 250px;
+  top: 300px;
 }

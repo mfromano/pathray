@@ -53,7 +53,7 @@ async function predict(model, croppedImage) {
 async function appendTableDom(results) {
     var labels = await config.then(res => res.LABELS);
     var tbl = document.createElement('table');
-    tbl.setAttribute('id', 'resultsTable')
+    tbl.setAttribute('id', 'resul tsTable')
     await tbl.createTHead().insertRow().appendChild(document.createElement('th')
         .appendChild(document.createTextNode('Results')));
     var tblBody = await tbl.createTBody()
@@ -76,18 +76,16 @@ async function predictAndPlot(mod, im_age) {
     var maxClass = await pred.dataSync().indexOf(Math.max(...pred.dataSync()));
     return mod.then(mdl => computeGrads_real(mdl, im_age, maxClass));
 }
-let config
 
-config = $.getJSON(MODEL_PATH + 'config.json', function (json) {
+
+var config = $.getJSON(MODEL_PATH + 'config.json', function (json) {
     return json;
 });
 
 const model = loadModel(MODEL_PATH);
 
-let img = new Image();
-img.src = 'atelectasis.jpeg';
-img.onload = async function () {
-    var imgResized = resizeImage(img);
-    await makeImageNode(imgResized);
-    await predictAndPlot(model, imgResized);
-}
+// let img = new Image();
+// img.src = 'atelectasis.jpeg';
+// var imgResized = resizeImage(img);
+// makeImageNode(imgResized);
+// predictAndPlot(model, imgResized);

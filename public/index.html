@@ -12,7 +12,19 @@
     <title>PathRay</title>
 </head>
 <body id="main">
-
+<input id="new_image" type="file" name="xray"/>
 </body>
 <script src="javascripts/predict.js"></script>
+<script type="text/javascript">
+     function readFile(event) {
+        var img = new Image();
+        img.src = URL.createObjectURL(event.files[0])
+         img.onload = () => {
+             document.getElementById('new_image').remove()
+             var imgResized = resizeImage(img);
+            makeImageNode(imgResized);
+            predictAndPlot(model, imgResized);
+    }}
+    $("#new_image").change(function() {readFile(this)})
+</script>
 </html>
