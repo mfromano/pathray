@@ -53,6 +53,7 @@ function rescale(arr) {
     return arr.map(x => (x-min)/(max-min));
 }
 
+//next function modified heavily from both chesterai and grad-CAM js
 function applyColorMap(grayScaleImage) {
     const colorMapSize = RGB_COLORMAP.length / 3;
     rescale(grayScaleImage);

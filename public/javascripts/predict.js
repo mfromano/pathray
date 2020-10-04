@@ -4,7 +4,7 @@ canvas.setAttribute('id','xray')
 body.appendChild(canvas);
 var ctx=canvas.getContext("2d");
 
-MODEL_PATH = 'http://mlmed.github.io/tools/xray/models/xrv-all-45rot15trans15scale/';
+MODEL_PATH = 'https://mlmed.github.io/tools/xray/models/xrv-all-45rot15trans15scale/';
 
 
 async function loadModel(path) {
@@ -76,16 +76,18 @@ async function predictAndPlot(mod, im_age) {
     var maxClass = await pred.dataSync().indexOf(Math.max(...pred.dataSync()));
     return mod.then(mdl => computeGrads_real(mdl, im_age, maxClass));
 }
+let config
 
-var config = $.getJSON(MODEL_PATH + 'config.json', function(json) {
+config = $.getJSON(MODEL_PATH + 'config.json', function (json) {
     return json;
 });
-
 
 const model = loadModel(MODEL_PATH);
 
 let img = new Image();
-img.src = '../images/atelectasis.jpeg';
-var imgResized = resizeImage(img);
-makeImageNode(imgResized);
-predictAndPlot(model, imgResized);
+img.src = 'atelectasis.jpeg';
+img.onload = async function () {
+    var imgResized = resizeImage(img);
+    await makeImageNode(imgResized);
+    await predictAndPlot(model, imgResized);
+}
