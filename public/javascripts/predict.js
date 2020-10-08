@@ -53,7 +53,7 @@ async function predict(model, croppedImage) {
 async function appendTableDom(results) {
     var labels = await config.then(res => res.LABELS);
     var tbl = document.createElement('table');
-    tbl.setAttribute('id', 'resul tsTable')
+    tbl.setAttribute('id', 'resultsTable')
     await tbl.createTHead().insertRow().appendChild(document.createElement('th')
         .appendChild(document.createTextNode('Results')));
     var tblBody = await tbl.createTBody()
