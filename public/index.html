@@ -21,9 +21,7 @@
         img.src = URL.createObjectURL(event.files[0])
          img.onload = () => {
              document.getElementById('new_image').remove()
-             var imgResized = resizeImage(img);
-            makeImageNode(imgResized);
-            predictAndPlot(model, imgResized);
+            run(img)
     }}
     $("#new_image").change(function() {readFile(this)})
 </script>
